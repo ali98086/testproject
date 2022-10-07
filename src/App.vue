@@ -22,8 +22,15 @@
     </tr>
   </table>
 
+  <ListColors>
+    <template v-slot:ul>
+      <ul>
+        <li v-for="(color, index) in colors" :key="index">{{ color }}</li>
+      </ul>
+    </template>
+  </ListColors>
+
   <CommentForm />
- 
 
   <div>
     <p>برای دریافت نام وبسایت روی دکمه کلیک کنید</p>
@@ -31,14 +38,25 @@
     <p>{{ websitename }}</p>
   </div>
 
-  <input :class="{red: redbgcolor}" ref="input" type="text" placeholder="روی کادر دابل کلیک کنید" @dblclick="changeBgColor()"/>
+  <input
+    :class="{ red: redbgcolor }"
+    ref="input"
+    type="text"
+    placeholder="روی کادر دابل کلیک کنید"
+    @dblclick="changeBgColor()"
+  />
 
-<UserInf :user-info = 'userInfo' @showinf="setStatus($event)"/>
-   <span>
+  <UserInf :user-info="userInfo" @showinf="setStatus($event)" />
+  <span>
     : وضعیت دریافت لیست کاربر
-  <p>{{statusInfList}}</p>
+    <p>{{ statusInfList }}</p>
   </span>
 
+  <UserAgent />
+
+  <Teleport to="#TeleportTitr"
+    ><h1 style="background-color: yellow">Titr By Teleport</h1></Teleport
+  >
 </template>
 
 
@@ -48,6 +66,8 @@
 import HelloWorld from "./components/HelloWorld.vue";
 import CommentForm from "./components/CommentForm.vue";
 import UserInf from "./components/UserInf.vue";
+import ListColors from "./components/ListColors.vue";
+import UserAgent from "./components/UserAgent.vue";
 
 export default {
   name: "App",
@@ -70,22 +90,22 @@ export default {
 
       colors: ["red", "blue", "green"],
 
-      userInfo : {
-
-        fname: 'ali',
-        lname: 'hashemi',
-        age: 35
-
+      userInfo: {
+        fname: "ali",
+        lname: "hashemi",
+        age: 35,
       },
-      statusInfList: 'عدم نمایش اطلاعات',
-        setStatus(sts){
 
-      this.statusInfList= sts;
+      userAgent: {
+        username: "pishgaman",
+        password: "adsffrd",
+      },
 
-    }
-
-
-    }
+      statusInfList: "عدم نمایش اطلاعات",
+      setStatus(sts) {
+        this.statusInfList = sts;
+      },
+    };
   },
 
   methods: {
@@ -96,21 +116,30 @@ export default {
       }, 2000);
     },
 
-    changeBgColor(){
-
-      this.redbgcolor= true;
-      this.$refs.input.style.height= '30px';
-
+    changeBgColor() {
+      this.redbgcolor = true;
+      this.$refs.input.style.height = "30px";
     },
+  },
 
+  provide() {
+    return {
+      userAgent: this.userAgent,
 
-
+      // or provide:{
+      // userAgent: {
+      // username: this.userAgent.username,
+      // password: this.userAgent.password
+      // }}
+    };
   },
 
   components: {
     HelloWorld,
     CommentForm,
-    UserInf
+    UserInf,
+    ListColors,
+    UserAgent,
   },
 };
 </script>
@@ -149,22 +178,15 @@ button {
   min-height: 30px;
 }
 
-.red{
-
+.red {
   background-color: red;
-
 }
 
-#commentbtn{
-
+#commentbtn {
   margin-right: 10px;
-
 }
-ul{
-
+ul {
   padding: 0;
   list-style-type: none;
 }
-
-
 </style>
